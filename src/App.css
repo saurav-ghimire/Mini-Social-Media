@@ -1,0 +1,10 @@
+.app-container{
+  display: flex;
+}
+.app-container .app-body{
+  width: 80%;
+}
+
+.app-container .app-sidebar{
+  width: 20%;
+}
