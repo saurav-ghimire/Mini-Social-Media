@@ -7,4 +7,17 @@
 
 .app-container .app-sidebar{
   width: 20%;
+  position: relative;
+}
+.inner-body-wrapper{
+  padding: 40px;
+}
+
+.custom-sidebar{
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 20%;
+  z-index: 9;
 }
