@@ -1,9 +1,10 @@
-import { createContext, useRef } from "react";
-import PostList from "./PostList";
+import { useContext, useRef } from "react";
+import { postList } from "../store/post-list-store";
 
 function CreatePost() {
 
-  const { addPost } = createContext(PostList)
+  const { addPost } = useContext(postList);
+  
 
   const userIDElement = useRef();
   const titleElement = useRef();
@@ -12,6 +13,8 @@ function CreatePost() {
   const tagsElement = useRef();
   
   const handleSubmit = (event) => {
+    event.preventDefault();
+
     const userID = userIDElement.current.value;
     const title = titleElement.current.value;
     const body = bodyElement.current.value;
@@ -19,8 +22,14 @@ function CreatePost() {
     const allTags = tagsElement.current.value;
     const finalTags = allTags.split(" ");
 
-    addPost(userID, title, body, reactions,tags )
-    event.preventDefault();
+    addPost(userID, title, body, reaction,finalTags );
+
+    userIDElement.current.value = "";
+    titleElement.current.value = "";
+    bodyElement.current.value = "";
+    reactionElement.current.value = "";
+    tagsElement.current.value = "";
+    
   }
 
   return <>
