@@ -33,3 +33,8 @@
 .reactions{
   margin-top: 10px;
 }
+
+
+.custom-badge{
+  cursor: pointer;
+}
