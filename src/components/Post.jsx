@@ -5,7 +5,7 @@ import { postList } from "../store/post-list-store";
 function Post({post}) {
   const {deletePost} = useContext(postList);
   return <>
-    <div className="card" style={{width: "18rem"}}>
+    <div className="card custom-card">
     <span className="position-absolute top-0 start-100 translate-middle badge custom-badge rounded-pill bg-danger"
     onClick={() => {deletePost(post.id)}}
     ><MdDelete /></span>

@@ -11,6 +11,14 @@
 }
 .inner-body-wrapper{
   padding: 40px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.custom-card{
+  width: 32%;
 }
 
 .custom-sidebar{
@@ -37,4 +45,8 @@
 
 .custom-badge{
   cursor: pointer;
+}
+
+.create-post{
+  width: 100%;
 }
