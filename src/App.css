@@ -21,3 +21,15 @@
   width: 20%;
   z-index: 9;
 }
+
+.card{
+  margin-bottom: 15px;
+}
+
+.custom-tags{
+  margin:0 4px 0 0;
+}
+
+.reactions{
+  margin-top: 10px;
+}
