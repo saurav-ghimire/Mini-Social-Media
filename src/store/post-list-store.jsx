@@ -1,12 +1,13 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useState, useEffect } from "react";
 
-const default_post_list = [];
+const [default_post_list] = [];
 
 export const postList = createContext({
   PostLists : [],
   addPost : () => {},
   deletePost:() => {},
-  addInitialPosts:() => {}
+  addInitialPosts:() => {},
+  fetching: false
 });
 
 const postReducer = (currentPostList, action) => {
@@ -16,7 +17,7 @@ const postReducer = (currentPostList, action) => {
     case 'ADD_INITIAL_POSTS':
       return action.payload.posts;
     case 'ADD_POST':
-    const newcurrentPostList = [...currentPostList, action.payload];
+    const newcurrentPostList = [action.payload, ...currentPostList];
     return newcurrentPostList;
     default:
       return currentPostList;
@@ -25,19 +26,19 @@ const postReducer = (currentPostList, action) => {
 
 
 const PostListProvider = ({children}) => {
-  const [PostLists, dispatchPost] = useReducer(postReducer, default_post_list);
 
-  const addPost = (userID, title, body, reaction, finalTags) => {
-    
+  const[fetching, setFetching] = useState(false) 
+  
+  
+
+  const [PostLists, dispatchPost] = useReducer(postReducer, []);
+
+  const addPost = (post) => {
+    console.log('i a at add post')
+    console.log(post)
     dispatchPost({
       type: 'ADD_POST',
-      payload: {
-        id:userID,
-        title: title,
-        body: body,
-        reactions: reaction,
-        tags: finalTags
-      } 
+      payload: post
     })
   };
   const addInitialPosts = (posts) => {
@@ -58,11 +59,28 @@ const PostListProvider = ({children}) => {
     })
   };
 
+  useEffect(() => {
+    setFetching(true)
+    const controller = new AbortController();
+    const single = controller.single;
+    fetch('https://dummyjson.com/posts', {single})
+    .then(res => res.json())
+    .then(data => {
+      addInitialPosts(data.posts)
+      setFetching(false)
+    })
+    return () => {
+      controller.abort();
+    }    
+  }, [])
+
+
   return <postList.Provider value={{
     PostLists: PostLists,
     addPost: addPost,
     deletePost: deletePost,
-    addInitialPosts: addInitialPosts
+    addInitialPosts: addInitialPosts,
+    fetching: fetching
   }}>
     {children}
   </postList.Provider>

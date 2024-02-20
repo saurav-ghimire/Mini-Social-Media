@@ -15,21 +15,32 @@ function CreatePost() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const userID = userIDElement.current.value;
+    const userID = parseInt(userIDElement.current.value);
     const title = titleElement.current.value;
     const body = bodyElement.current.value;
     const reaction = reactionElement.current.value;
     const allTags = tagsElement.current.value;
     const finalTags = allTags.split(" ");
 
-    addPost(userID, title, body, reaction,finalTags );
-
     userIDElement.current.value = "";
     titleElement.current.value = "";
     bodyElement.current.value = "";
     reactionElement.current.value = "";
     tagsElement.current.value = "";
-    
+  
+    fetch('https://dummyjson.com/posts/add', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      userId: userID,
+      title: title,
+      body: body,
+      reactions: reaction,
+      tags: finalTags
+    })
+  })
+  .then(res => res.json())
+  .then(post => addPost(post));
   }
 
   return <>
