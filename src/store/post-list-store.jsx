@@ -18,6 +18,7 @@ const postReducer = (currentPostList, action) => {
       return action.payload.posts;
     case 'ADD_POST':
     const newcurrentPostList = [action.payload, ...currentPostList];
+    console.log(newcurrentPostList)
     return newcurrentPostList;
     default:
       return currentPostList;

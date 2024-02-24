@@ -6,6 +6,7 @@ import PostList from './components/PostList';
 import Sidebar from './components/Sidebar';
 import Header from './components/header';
 import PostListProvider from './store/post-list-store';
+import { Outlet } from 'react-router-dom';
 
 function App() {
   const [selectedTab, setSelectedTab] = useState("Home");
@@ -19,7 +20,7 @@ function App() {
       <div className='app-body'>
         <Header />      
         <div className="inner-body-wrapper">
-          {selectedTab === 'Home' ? <PostList /> : <CreatePost /> }
+        <Outlet />
         </div>
         <Footer />
       </div>

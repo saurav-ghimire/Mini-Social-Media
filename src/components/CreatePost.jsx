@@ -1,12 +1,12 @@
 import { useContext, useRef } from "react";
 import { postList } from "../store/post-list-store";
+import { useNavigate } from "react-router-dom";
 
 function CreatePost() {
 
   const { addPost } = useContext(postList);
-  
+  const navigate = useNavigate();
 
-  const userIDElement = useRef();
   const titleElement = useRef();
   const bodyElement = useRef();
   const reactionElement = useRef();
@@ -15,48 +15,45 @@ function CreatePost() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const userID = parseInt(userIDElement.current.value);
+    const userID = Math.floor(Math.random() * 100) + 1;
+    const id = Math.floor(Math.random() * 100) + 1;
+    
     const title = titleElement.current.value;
     const body = bodyElement.current.value;
     const reaction = reactionElement.current.value;
     const allTags = tagsElement.current.value;
     const finalTags = allTags.split(" ");
 
-    userIDElement.current.value = "";
+
     titleElement.current.value = "";
     bodyElement.current.value = "";
     reactionElement.current.value = "";
     tagsElement.current.value = "";
   
     fetch('https://dummyjson.com/posts/add', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      userId: userID,
-      title: title,
-      body: body,
-      reactions: reaction,
-      tags: finalTags
-    })
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    
+    userId: userID,
+    title: title,
+    body: body,
+    reactions: reaction,
+    tags: finalTags
   })
-  .then(res => res.json())
-  .then(post => addPost(post));
+})
+.then(res => res.json())
+.then((post) => {
+  // Update your state with the id you sent in the request
+  addPost({ ...post, id: id });
+  navigate("/");
+});
+
+
   }
 
   return <>
       <form className="create-post" onSubmit={handleSubmit}>
-        <div className="mb-3">
-          {/* User ID */}
-          <label htmlFor="userid" className="form-label">User ID</label>
-          <input 
-            type="text" 
-            className="form-control" 
-            id="userid" 
-            aria-describedby="userHelp" 
-            placeholder="Enter Your User ID Here" 
-            ref={userIDElement}
-          />
-        </div>
         <div className="mb-3">
           {/* Title */}
           <label htmlFor="title" className="form-label">Title</label>
