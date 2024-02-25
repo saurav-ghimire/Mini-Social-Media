@@ -1,6 +1,4 @@
-import { createContext, useReducer, useState, useEffect } from "react";
-
-const [default_post_list] = [];
+import { createContext, useEffect, useReducer } from "react";
 
 export const postList = createContext({
   PostLists : [],
@@ -10,63 +8,57 @@ export const postList = createContext({
   
 });
 
-const postReducer = (currentPostList, action) => {
-  switch (action.type) {
-    case 'DELETE_POST':
-      return currentPostList.filter(post => post.id !== action.payload.postId);
-    case 'ADD_INITIAL_POSTS':
-      return action.payload.posts;
-    case 'ADD_POST':
-    const newcurrentPostList = [action.payload, ...currentPostList];
-    console.log(newcurrentPostList)
-    return newcurrentPostList;
-    default:
-      return currentPostList;
+const reducer = (currentPost, action) => {
+  if(action.type === 'ADD_INITIAL_POSTS'){
+    currentPost = action.payload;
+  }else if(action.type === 'ADD_POST'){
+    currentPost = [action.payload, ...currentPost];
   }
-};
-
+  else if(action.type === 'DELETE_POST'){
+    currentPost = currentPost.filter((post) => post.id !== action.payload.id)
+  }
+  return currentPost;
+}
 
 const PostListProvider = ({children}) => {
-
-  const[fetching, setFetching] = useState(false) 
   
+  const [state, Dispatch] = useReducer(reducer, []);
   
-
-  const [PostLists, dispatchPost] = useReducer(postReducer, []);
-
-  const addPost = (post) => {
-    console.log('i a at add post')
-    console.log(post)
-    dispatchPost({
-      type: 'ADD_POST',
-      payload: post
+  useEffect(() => {
+    fetch('https://dummyjson.com/posts')
+    .then(res => res.json())
+    .then((data) => {
+      allInitialPost(data.posts)
     })
-  };
-  const addInitialPosts = (posts) => {
-    
-    dispatchPost({
-      type: 'ADD_INITIAL_POSTS',
-      payload: {
-        posts
-      } 
+  }, [])
+
+  const allInitialPost = (data) => {
+    // console.log(data)
+  Dispatch({
+          type: 'ADD_INITIAL_POSTS',
+          payload: data
+        })
+  }
+
+  const addPost = (data) => {
+    Dispatch({
+      type : 'ADD_POST',
+      payload : data
     })
-  };
-  const deletePost = (id) => {
-    dispatchPost({
-      type: 'DELETE_POST',
-      payload: {
-        postId: id
+  }
+  const deletePost = (data) => {
+    Dispatch({
+      type : 'DELETE_POST',
+      payload : {
+        id : data
       }
     })
-  };
-
-
+  }
+  
   return <postList.Provider value={{
-    PostLists: PostLists,
+    PostLists : state,
     addPost: addPost,
     deletePost: deletePost,
-    addInitialPosts: addInitialPosts,
-    
   }}>
     {children}
   </postList.Provider>

@@ -1,86 +1,107 @@
 import { useContext, useRef } from "react";
 import { postList } from "../store/post-list-store";
-import { Form, useNavigate } from "react-router-dom";
 
 function CreatePost() {
 
-  // const { addPost } = useContext(postList);
+  const {addPost} = useContext(postList)
 
 
+  const postID = useRef();
+  const userID = useRef();
+  const postTitle = useRef();
+  const body = useRef();
+  const tags = useRef();
+  const reactions = useRef();
+  
+  const afterSubmit = (event) => {
+  
+    event.preventDefault();
+    const postIdValue = postID.current.value;
+    const postUserId = userID.current.value;
+    const postPostTitle = postTitle.current.value;
+    const postBody = body.current.value;
+    const postTags = tags.current.value;
+    const allTags = postTags.split(' ');
+    const postReactions = reactions.current.value;
+    const toPost = {
+        id: postIdValue,
+        userId: postUserId,
+        title: postPostTitle,
+        body: postBody,
+        tags: allTags,
+        reactions: postReactions
+    }
+    
+    addPost(toPost);
+
+    postID.current.value = '';
+    userID.current.value = '';
+    postTitle.current.value = '';
+    body.current.value = '';
+    tags.current.value = '';
+    reactions.current.value = '';
+  }
   return <>
-      <Form method="POST" className="create-post">
-        <div className="mb-3">
-          {/* Title */}
-          <label htmlFor="title" className="form-label">Title</label>
-          <input 
-            type="text" 
-            className="form-control" 
-            id="title" 
-            aria-describedby="titleHelp" 
-            placeholder="Enter Your Email Here" 
-            name="title"
-
-          />
-        </div>
-        <div className="mb-3">
-          {/* Post Content */}
-          <label htmlFor="body" className="form-label">Post Content</label>
-          <textarea 
-            name="body" 
-            id="body" 
-            cols="30" 
-            rows="5" 
-            className="form-control" 
-            placeholder="Enter Your Content Here" 
-          ></textarea>
-        </div>
-        <div className="mb-3">
-          {/* Number of Reactions */}
-          <label htmlFor="reaction" className="form-label">Number of Reactions</label>
-          <input 
-            type="text" 
-            className="form-control" 
-            id="reaction" 
-            aria-describedby="reactionHelp" 
-            placeholder="Enter the number of reactions you want on the post" 
-            name="reactions"
-          />
-        </div>
-        <div className="mb-3">
-          {/* Tags */}
-          <label htmlFor="tags" className="form-label">Tags</label>
-          <input 
-            type="text" 
-            className="form-control" 
-            id="tags" 
-            placeholder="Enter Your Tags Here"
-            name="tags"
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">Post</button>
-      </Form>
+  <div className="custom-form">
+  <h2>Create Post</h2>
+  <form onSubmit={afterSubmit}>
+  <div className="mb-3">
+    <label htmlFor="id" className="form-label">ID</label>
+    <input type="text"
+    className="form-control"
+    ref={postID}
+    id="id"
+    name="id" />
+  </div>
+  <div className="mb-3">
+    <label htmlFor="userID" className="form-label">UserID</label>
+    <input type="text" 
+    className="form-control"
+    id="userID"
+    ref={userID}
+    name="userID" />
+  </div>
+  <div className="mb-3">
+    <label htmlFor="title" className="form-label">Title</label>
+    <input 
+    type="text"
+    className="form-control"
+    id="title"
+    ref={postTitle}
+    name="title"
+    />
+  </div>
+  <div className="mb-3">
+    <label htmlFor="body" className="form-label">Body</label>
+    <textarea
+    className="form-control"
+    id="body"
+    ref={body}
+    name="body"></textarea>
+  </div>
+  <div className="mb-3">
+    <label htmlFor="reactions" className="form-label">Reactions</label>
+    <input 
+    type="text"
+    className="form-control"
+    id="reactions"
+    ref={reactions}
+    name="reactions"
+    />
+  </div>
+  <div className="mb-3">
+    <label htmlFor="tags" className="form-label">Tags</label>
+    <input type="text"
+    className="form-control"
+    id="tags"
+    ref={tags}
+    name="tags" />
+  </div>
+  <button type="submit" className="btn btn-primary">Submit</button>
+</form>
+  </div>
 
   </>;
 }
 
-export async function createPostAction(data) {
-  const formData = await data.request.formData();
-  const postData = Object.fromEntries(formData);
-  postData.tags = postData.tags.split(" ");
-  postData.id = Math.floor(Math.random() * 100) + 1;
-  postData.userId = Math.floor(Math.random() * 100) + 1;
-  console.log(postData)
-  return fetch('https://dummyjson.com/posts/add', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(postData)
-  })
-  .then(res => res.json())
-  .then((post) => {
-    
-    console.log(post);
-    return post;
-    
-  });
-}
 export default CreatePost;

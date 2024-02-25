@@ -1,25 +1,26 @@
-import { useContext, useEffect, useState} from "react";
+import { postList } from "../store/post-list-store";
 import Post from "./Post";
-import {postList as postListData} from "../store/post-list-store";
-import WelcomeMessage from "./WelcomeMessage";
-import LoadingSpinner from "./LoadingSpinner";
-import { useLoaderData } from "react-router-dom";
+import { useContext } from "react";
 
-function PostList() {
-  const PostLists = useLoaderData();
-  return <>
-        
-        {PostLists.length === 0 && <WelcomeMessage />}
-        {PostLists.map((data) => <Post key={data.title} post={data} />)}
+function ListPost() {
+  const data = useContext(postList);
+
+  // Check if data.PostLists is undefined or null
+  if (!data || !data.PostLists) {
+    return <p>Loading...</p>; // or some other loading state/component
+  }
+
+  // Ensure to return the mapped array
+  return (
+    <>
+      <div className="title-wrapper">
+      <h2>Our Post</h2>
+      </div>
+      {data.PostLists.map((post) => (
+        <Post key={post.id} value={post} />
+      ))}
     </>
-    ;
+  );
 }
 
-export const PostLoader = () =>{ 
-  return fetch('https://dummyjson.com/posts')
-    .then(res => res.json())
-    .then(data => {
-      return data.posts;
-    })
-  }
-export default PostList;
+export default ListPost;
